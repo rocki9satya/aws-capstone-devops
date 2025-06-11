@@ -51,9 +51,9 @@ rm -rf awscliv2.zip aws
 # kubectl
 #######################################
 echo "Installing kubectl..."
-KUBE_VERSION=$(curl -s https://dl.k8s.io/release/stable.txt)
-curl -LO "https://dl.k8s.io/release/${KUBE_VERSION}/bin/linux/amd64/kubectl"
-chmod +x kubectl && mv kubectl /usr/local/bin/
+curl -LO "https://dl.k8s.io/release/v1.30.1/bin/linux/amd64/kubectl"
+chmod +x kubectl
+mv kubectl /usr/local/bin/kubectl
 
 #######################################
 # eksctl
