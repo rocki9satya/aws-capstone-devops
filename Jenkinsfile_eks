@@ -1,0 +1,54 @@
+pipeline {
+  agent any
+
+  environment {
+    AWS_REGION = 'us-east-1'
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        git url: 'https://github.com/rocki9satya/aws-kubernates.git', branch: 'main'
+      }
+    }
+
+    stage('Terraform Init') {
+      steps {
+        sh '''
+          cd eks
+          terraform init
+        '''
+      }
+    }
+
+    stage('Terraform Plan') {
+      steps {
+        sh '''
+          cd eks
+          terraform plan
+        '''
+      }
+    }
+
+    stage('Terraform Apply') {
+  steps {
+    script {
+      try {
+        timeout(time: 20, unit: 'SECONDS') {
+          input message: "Apply changes to EKS?", ok: "Yes, proceed"
+        }
+      } catch (err) {
+        echo "No input received within timeout. Proceeding by default..."
+      }
+    }
+
+    sh '''
+      cd eks
+      terraform apply -auto-approve
+      terraform output > ../eks_output.txt
+    '''
+  }
+}
+
+  }
+}
